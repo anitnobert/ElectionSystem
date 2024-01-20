@@ -7,60 +7,52 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ElectionCommission.Helpers;
 using ElectionCommission.Models;
-using ElectionCommission.Authorization;
 
 namespace ElectionCommission.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VotersController : ControllerBase
+    public class CommissionersController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public VotersController(DataContext context)
+        public CommissionersController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: api/Voters
+        // GET: api/Commissioners
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Voter>>> GetVoters()
+        public async Task<ActionResult<IEnumerable<Commissioner>>> GetOfficials()
         {
-            return await _context.Voters.ToListAsync();
+            return await _context.Officials.ToListAsync();
         }
 
-        // GET: api/Voters/5
+        // GET: api/Commissioners/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Voter>> GetVoter(string id)
+        public async Task<ActionResult<Commissioner>> GetCommissioner(string id)
         {
-            try
-            {
-                var voter = await _context.Voters.FindAsync(id);
+            var commissioner = await _context.Officials.FindAsync(id);
 
-                if (voter == null)
-                {
-                    return NotFound();
-                }
-
-                return voter;
-            }
-            catch (Exception ex)
+            if (commissioner == null)
             {
-                Console.WriteLine(ex.Message);
-                return BadRequest();
+                return NotFound();
             }
+
+            return commissioner;
         }
 
- 
+        // PUT: api/Commissioners/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVoter(string id, Voter voter)
+        public async Task<IActionResult> PutCommissioner(string id, Commissioner commissioner)
         {
-            if (id != voter.Id)
+            if (id != commissioner.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(voter).State = EntityState.Modified;
+            _context.Entry(commissioner).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +60,7 @@ namespace ElectionCommission.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!VoterExists(id))
+                if (!CommissionerExists(id))
                 {
                     return NotFound();
                 }
@@ -81,19 +73,19 @@ namespace ElectionCommission.Controllers
             return NoContent();
         }
 
-        // POST: api/Voters
+        // POST: api/Commissioners
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Voter>> PostVoter(Voter voter)
+        public async Task<ActionResult<Commissioner>> PostCommissioner(Commissioner commissioner)
         {
-            _context.Voters.Add(voter);
+            _context.Officials.Add(commissioner);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (VoterExists(voter.Id))
+                if (CommissionerExists(commissioner.Id))
                 {
                     return Conflict();
                 }
@@ -103,28 +95,28 @@ namespace ElectionCommission.Controllers
                 }
             }
 
-            return CreatedAtAction("GetVoter", new { id = voter.Id }, voter);
+            return CreatedAtAction("GetCommissioner", new { id = commissioner.Id }, commissioner);
         }
 
-        // DELETE: api/Voters/5
+        // DELETE: api/Commissioners/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteVoter(string id)
+        public async Task<IActionResult> DeleteCommissioner(string id)
         {
-            var voter = await _context.Voters.FindAsync(id);
-            if (voter == null)
+            var commissioner = await _context.Officials.FindAsync(id);
+            if (commissioner == null)
             {
                 return NotFound();
             }
 
-            _context.Voters.Remove(voter);
+            _context.Officials.Remove(commissioner);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool VoterExists(string id)
+        private bool CommissionerExists(string id)
         {
-            return _context.Voters.Any(e => e.Id == id);
+            return _context.Officials.Any(e => e.Id == id);
         }
     }
 }

@@ -7,60 +7,52 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ElectionCommission.Helpers;
 using ElectionCommission.Models;
-using ElectionCommission.Authorization;
 
 namespace ElectionCommission.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VotersController : ControllerBase
+    public class PartiesController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public VotersController(DataContext context)
+        public PartiesController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: api/Voters
+        // GET: api/Parties
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Voter>>> GetVoters()
+        public async Task<ActionResult<IEnumerable<Party>>> GetParties()
         {
-            return await _context.Voters.ToListAsync();
+            return await _context.Parties.ToListAsync();
         }
 
-        // GET: api/Voters/5
+        // GET: api/Parties/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Voter>> GetVoter(string id)
+        public async Task<ActionResult<Party>> GetParty(string id)
         {
-            try
-            {
-                var voter = await _context.Voters.FindAsync(id);
+            var party = await _context.Parties.FindAsync(id);
 
-                if (voter == null)
-                {
-                    return NotFound();
-                }
-
-                return voter;
-            }
-            catch (Exception ex)
+            if (party == null)
             {
-                Console.WriteLine(ex.Message);
-                return BadRequest();
+                return NotFound();
             }
+
+            return party;
         }
 
- 
+        // PUT: api/Parties/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVoter(string id, Voter voter)
+        public async Task<IActionResult> PutParty(string id, Party party)
         {
-            if (id != voter.Id)
+            if (id != party.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(voter).State = EntityState.Modified;
+            _context.Entry(party).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +60,7 @@ namespace ElectionCommission.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!VoterExists(id))
+                if (!PartyExists(id))
                 {
                     return NotFound();
                 }
@@ -81,19 +73,19 @@ namespace ElectionCommission.Controllers
             return NoContent();
         }
 
-        // POST: api/Voters
+        // POST: api/Parties
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Voter>> PostVoter(Voter voter)
+        public async Task<ActionResult<Party>> PostParty(Party party)
         {
-            _context.Voters.Add(voter);
+            _context.Parties.Add(party);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (VoterExists(voter.Id))
+                if (PartyExists(party.Id))
                 {
                     return Conflict();
                 }
@@ -103,28 +95,28 @@ namespace ElectionCommission.Controllers
                 }
             }
 
-            return CreatedAtAction("GetVoter", new { id = voter.Id }, voter);
+            return CreatedAtAction("GetParty", new { id = party.Id }, party);
         }
 
-        // DELETE: api/Voters/5
+        // DELETE: api/Parties/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteVoter(string id)
+        public async Task<IActionResult> DeleteParty(string id)
         {
-            var voter = await _context.Voters.FindAsync(id);
-            if (voter == null)
+            var party = await _context.Parties.FindAsync(id);
+            if (party == null)
             {
                 return NotFound();
             }
 
-            _context.Voters.Remove(voter);
+            _context.Parties.Remove(party);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool VoterExists(string id)
+        private bool PartyExists(string id)
         {
-            return _context.Voters.Any(e => e.Id == id);
+            return _context.Parties.Any(e => e.Id == id);
         }
     }
 }

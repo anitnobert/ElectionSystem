@@ -26,10 +26,18 @@ namespace ElectionCommission.Helpers
 
             modelBuilder.Entity<Voter>().ToTable("Voters");
             modelBuilder.Entity<Commissioner>().ToTable("Officials");
+            modelBuilder.Entity<Party>().ToTable("Party");
+            modelBuilder.Entity<StateDetail>().ToTable("States");
+            modelBuilder.Entity<Constituency>().ToTable("Constituency");
         }
 
         public DbSet<Voter> Voters { get; set; }
         public DbSet<Commissioner> Officials { get; set; }
+
+        public DbSet<Party> Parties { get; set; }
+        public DbSet<StateDetail> States { get; set; }
+        public DbSet<Constituency> Constituencies { get; set; }
+
     }
 
 }
